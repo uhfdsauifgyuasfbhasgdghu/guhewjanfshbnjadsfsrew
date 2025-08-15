@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cooked.lua</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Chakra Petch', sans-serif; }
+        /* Completely transparent body - no background whatsoever */
+        body { 
+            background: transparent !important; 
+            color: #e0e0e0; 
+            overflow: hidden; 
+            height: 100vh; 
+            pointer-events: none;
+        }
+        
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        .menu-container {
+            width: 600px; 
+            height: 700px;
+            /* Completely transparent background */
+            background: transparent;
+            border-radius: 12px;
+            display: flex; 
+            flex-direction: column;
+            overflow: hidden;
+            animation: fadeIn 0.4s ease-out;
+            position: absolute; 
+            top: 50%; 
+            left: 50%;
+            transform: translate(-50%, -50%);
+            visibility: hidden;
+            pointer-events: auto;
+        }
+        
+        .menu-header { 
+            padding: 20px; 
+            text-align: center; 
+            background: rgba(10, 8, 18, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(91, 33, 182, 0.6);
+            border-bottom: none;
+            border-radius: 12px 12px 0 0;
+            flex-shrink: 0; 
+            box-shadow: 0 2px 20px rgba(91, 33, 182, 0.3);
+            margin: 0;
+        }
+        
+        .logo h1 { 
+            font-family: 'Orbitron', sans-serif; 
+            font-size: 28px; 
+            font-weight: 700; 
+            background: linear-gradient(45deg, #a78bfa, #6d28d9); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            text-shadow: 0 0 15px rgba(124, 58, 237, 0.4); 
+        }
+        
+        .logo p { 
+            font-size: 12px; 
+            color: #8b5cf6; 
+            margin-top: 5px; 
+            letter-spacing: 1px; 
+            font-weight: 600; 
+        }
+        
+        .tab-nav { 
+            display: flex; 
+            justify-content: center; 
+            padding: 12px; 
+            background: rgba(10, 8, 18, 0.95);
+            backdrop-filter: blur(12px);
+            border-left: 1px solid rgba(91, 33, 182, 0.6);
+            border-right: 1px solid rgba(91, 33, 182, 0.6);
+            border-top: none;
+            border-bottom: none;
+            flex-shrink: 0; 
+            margin: 0;
+        }
+        
+        .tab-button { 
+            padding: 8px 16px; 
+            margin: 0 2px; 
+            background: rgba(0,0,0,0.2); 
+            border: 1px solid rgba(91, 33, 182, 0.3); 
+            color: #a7a7a7; 
+            font-size: 13px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            border-radius: 6px; 
+            text-transform: uppercase; 
+        }
+        
+        .tab-button:hover {
+            background: rgba(91, 33, 182, 0.15);
+            color: #c4b5fd;
+        }
+        
+        .tab-button.active { 
+            color: #ffffff; 
+            background: rgba(91, 33, 182, 0.4); 
+            border-color: rgba(167, 139, 250, 0.6); 
+            text-shadow: 0 0 8px rgba(167, 139, 250, 0.5); 
+            box-shadow: 0 0 12px rgba(91, 33, 182, 0.3);
+        }
+        
+        .main-content { 
+            flex: 1;
+            overflow: hidden; 
+            position: relative;
+            background: rgba(10, 8, 18, 0.95);
+            backdrop-filter: blur(12px);
+            border-left: 1px solid rgba(91, 33, 182, 0.6);
+            border-right: 1px solid rgba(91, 33, 182, 0.6);
+            border-bottom: 1px solid rgba(91, 33, 182, 0.6);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 8px 25px rgba(91, 33, 182, 0.2);
+            margin: 0;
+        }
+        
+        .tab-content { 
+            display: none; 
+            padding: 20px; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0; 
+            overflow-y: auto; 
+        }
+        
+        .tab-content.active { 
+            display: block; 
+        }
+        
+        .section-header { 
+            font-size: 16px; 
+            font-weight: 700; 
+            color: #a78bfa; 
+            margin-bottom: 18px; 
+            text-align: center; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .button-grid { 
+            display: grid; 
+            gap: 12px; 
+            grid-template-columns: 1fr 1fr; 
+        }
+        
+        .list-container { 
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .action-button, .list-item, .input-group { 
+            transition: all 0.3s ease; 
+        }
+        
+        .action-button { 
+            padding: 14px 12px; 
+            border: 1px solid rgba(91, 33, 182, 0.4); 
+            border-radius: 8px; 
+            color: #c4b5fd; 
+            font-size: 13px; 
+            font-weight: 600; 
+            text-align: center; 
+            background: rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+        
+        .action-button:hover {
+            background: rgba(91, 33, 182, 0.15);
+            border-color: rgba(91, 33, 182, 0.6);
+        }
+        
+        .action-button.selected { 
+            background: rgba(91, 33, 182, 0.4); 
+            color: #ffffff; 
+            border-color: #a78bfa; 
+            box-shadow: 0 0 20px rgba(167, 139, 250, 0.4); 
+            transform: translateY(-1px);
+        }
+        
+        /* Improved list item styling for resources/players */
+        .list-item { 
+            padding: 12px 16px; 
+            border: 1px solid rgba(91, 33, 182, 0.3); 
+            border-radius: 8px; 
+            color: #c4b5fd; 
+            font-size: 13px; 
+            font-weight: 500; 
+            background: rgba(0,0,0,0.15);
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .list-item:hover {
+            background: rgba(91, 33, 182, 0.1);
+            border-color: rgba(91, 33, 182, 0.5);
+        }
+        
+        .list-item.selected { 
+            background: rgba(91, 33, 182, 0.3); 
+            color: #ffffff; 
+            border-color: #a78bfa; 
+            box-shadow: 0 0 15px rgba(167, 139, 250, 0.3); 
+        }
+        
+        .input-group { 
+            margin-bottom: 15px; 
+            border: 1px solid rgba(91, 33, 182, 0.2); 
+            border-radius: 8px; 
+            padding: 12px; 
+            background: rgba(0,0,0,0.1);
+        }
+        
+        .input-group.selected { 
+            background: rgba(91, 33, 182, 0.15); 
+            border-color: #a78bfa; 
+            box-shadow: 0 0 12px rgba(167, 139, 250, 0.2); 
+        }
+        
+        .input-group label { 
+            display: block; 
+            margin-bottom: 8px; 
+            color: #8b5cf6; 
+            font-size: 12px; 
+            text-transform: uppercase; 
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .input-field { 
+            width: 100%; 
+            padding: 10px 14px; 
+            background: rgba(0, 0, 0, 0.4); 
+            border: 1px solid rgba(91, 33, 182, 0.4); 
+            border-radius: 6px; 
+            color: #fff; 
+            font-size: 13px; 
+            font-family: 'Chakra Petch', sans-serif;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #a78bfa;
+            box-shadow: 0 0 8px rgba(167, 139, 250, 0.3);
+        }
+        
+        /* Enhanced state styling */
+        .state { 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            font-size: 11px; 
+            padding: 4px 8px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+        }
+        
+        .state.started { 
+            color: #000; 
+            background: #10b981;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+        }
+        
+        .state.stopped { 
+            color: #000; 
+            background: #ef4444;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+        }
+        
+        .state.unknown {
+            color: #000;
+            background: #f59e0b;
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
+        }
+        
+        /* Enhanced scrollbar */
+        ::-webkit-scrollbar { 
+            width: 8px; 
+        }
+        
+        ::-webkit-scrollbar-track { 
+            background: rgba(0,0,0,0.2); 
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb { 
+            background: rgba(91, 33, 182, 0.6); 
+            border-radius: 4px; 
+        }
+        
+        ::-webkit-scrollbar-thumb:hover { 
+            background: rgba(91, 33, 182, 0.8); 
+        }
+        
+        /* Player list specific styling */
+        .player-item {
+            font-family: 'Chakra Petch', monospace;
+            font-size: 14px;
+        }
+        
+        .player-id {
+            color: #8b5cf6;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu-container" id="menu-container">
+        <header class="menu-header">
+            <div class="logo">
+                <h1>cooked.lua</h1>
+                <p>Made By CodePlug</p>
+            </div>
+        </header>
+        <nav class="tab-nav" id="tab-nav-buttons"></nav>
+        <div class="main-content">
+            <div class="tab-content" id="servers-content"></div>
+            <div class="tab-content" id="executor-content"></div>
+            <div class="tab-content" id="dynamic-content"></div>
+            <div class="tab-content" id="players-content"></div>
+            <div class="tab-content" id="resources-content"></div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuContainer = document.getElementById('menu-container');
+            const tabButtonsContainer = document.getElementById('tab-nav-buttons');
+            const tabContents = { 
+                servers: document.getElementById('servers-content'), 
+                executor: document.getElementById('executor-content'), 
+                dynamic: document.getElementById('dynamic-content'), 
+                players: document.getElementById('players-content'), 
+                resources: document.getElementById('resources-content') 
+            };
+
+            function scrollIntoView() {
+                const activeContent = document.querySelector('.tab-content.active');
+                if (!activeContent) return;
+                const selected = activeContent.querySelector('.selected');
+                if (selected) { 
+                    selected.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center' 
+                    }); 
+                }
+            }
+
+            window.addEventListener("message", (event) => {
+                const { action, data } = event.data;
+                if (action === "show" || action === "update") {
+                    renderMenu(data);
+                    setTimeout(scrollIntoView, 100); 
+                }
+                menuContainer.style.visibility = (action === 'hide') ? 'hidden' : 'visible';
+            });
+
+            function renderMenu(state) {
+                if (!state || !state.tabs) return;
+                
+                // Render tab buttons
+                tabButtonsContainer.innerHTML = '';
+                let activeTabKey = '';
+                
+                state.tabs.forEach((tabData, tabIndex) => {
+                    const isActive = state.activeTab === tabIndex;
+                    if (isActive) { activeTabKey = tabData.key; }
+                    
+                    const tabButton = document.createElement('button');
+                    tabButton.className = `tab-button ${isActive ? 'active' : ''}`;
+                    tabButton.textContent = tabData.title;
+                    tabButtonsContainer.appendChild(tabButton);
+                });
+                
+                // Show/hide tab contents
+                for (const key in tabContents) {
+                    const isActive = key === activeTabKey;
+                    tabContents[key].classList.toggle('active', isActive);
+                    
+                    if (isActive) {
+                        populateTab(tabContents[key], state.tabs[state.activeTab], state);
+                    }
+                }
+            }
+
+            function populateTab(tabElement, tabData, state) {
+                tabElement.innerHTML = ''; 
+                
+                const sectionHeader = document.createElement('div');
+                sectionHeader.className = 'section-header';
+                sectionHeader.textContent = tabData.header;
+                tabElement.appendChild(sectionHeader);
+                
+                const itemsContainer = document.createElement('div');
+                itemsContainer.className = tabData.type === 'grid' ? 'button-grid' : 'list-container';
+                
+                if (tabData.items && Array.isArray(tabData.items)) {
+                    tabData.items.forEach((item, index) => {
+                        let element;
+                        const isSelected = state.selection.index === index;
+                        
+                        if (tabData.type === 'form' && item.type === 'input') {
+                            element = document.createElement('div');
+                            element.className = `input-group ${isSelected ? 'selected' : ''}`;
+                            element.innerHTML = `
+                                <label>${item.label}</label>
+                                <input type="text" class="input-field" value="${item.value || ''}" readonly>
+                            `;
+                        } else if (tabData.key === 'resources') {
+                            element = document.createElement('div');
+                            element.className = `list-item ${isSelected ? 'selected' : ''}`;
+                            
+                            const stateText = item.state ? item.state.toUpperCase() : 'UNKNOWN';
+                            const stateClass = item.state || 'unknown';
+                            
+                            element.innerHTML = `
+                                <span style="font-weight: 600;">${item.label}</span>
+                                <span class="state ${stateClass}">${stateText}</span>
+                            `;
+                        } else if (tabData.key === 'players') {
+                            element = document.createElement('div');
+                            element.className = `list-item player-item ${isSelected ? 'selected' : ''}`;
+                            element.innerHTML = `<span>${item.label}</span>`;
+                        } else {
+                            element = document.createElement('button');
+                            element.className = `${tabData.type === 'grid' ? 'action-button' : 'list-item'} ${isSelected ? 'selected' : ''}`;
+                            element.textContent = item.label;
+                        }
+                        
+                        itemsContainer.appendChild(element);
+                    });
+                }
+                
+                tabElement.appendChild(itemsContainer);
+            }
+        });
+    </script>
+</body>
+</html>
