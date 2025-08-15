@@ -44,13 +44,12 @@
         .menu-header { 
             padding: 20px; 
             text-align: center; 
-            background: rgba(10, 8, 18, 0.95);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(91, 33, 182, 0.6);
+            background: transparent;
+            border: 1px solid rgba(91, 33, 182, 0.8);
             border-bottom: none;
             border-radius: 12px 12px 0 0;
             flex-shrink: 0; 
-            box-shadow: 0 2px 20px rgba(91, 33, 182, 0.3);
+            box-shadow: 0 0 20px rgba(91, 33, 182, 0.4);
             margin: 0;
         }
         
@@ -79,10 +78,9 @@
             display: flex; 
             justify-content: center; 
             padding: 12px; 
-            background: rgba(10, 8, 18, 0.95);
-            backdrop-filter: blur(12px);
-            border-left: 1px solid rgba(91, 33, 182, 0.6);
-            border-right: 1px solid rgba(91, 33, 182, 0.6);
+            background: transparent;
+            border-left: 1px solid rgba(91, 33, 182, 0.8);
+            border-right: 1px solid rgba(91, 33, 182, 0.8);
             border-top: none;
             border-bottom: none;
             flex-shrink: 0; 
@@ -120,14 +118,13 @@
             flex: 1;
             overflow: hidden; 
             position: relative;
-            background: rgba(10, 8, 18, 0.95);
-            backdrop-filter: blur(12px);
-            border-left: 1px solid rgba(91, 33, 182, 0.6);
-            border-right: 1px solid rgba(91, 33, 182, 0.6);
-            border-bottom: 1px solid rgba(91, 33, 182, 0.6);
+            background: transparent;
+            border-left: 1px solid rgba(91, 33, 182, 0.8);
+            border-right: 1px solid rgba(91, 33, 182, 0.8);
+            border-bottom: 1px solid rgba(91, 33, 182, 0.8);
             border-top: none;
             border-radius: 0 0 12px 12px;
-            box-shadow: 0 8px 25px rgba(91, 33, 182, 0.2);
+            box-shadow: 0 0 25px rgba(91, 33, 182, 0.3);
             margin: 0;
         }
         
@@ -174,14 +171,15 @@
         
         .action-button { 
             padding: 14px 12px; 
-            border: 1px solid rgba(91, 33, 182, 0.4); 
+            border: 1px solid rgba(91, 33, 182, 0.6); 
             border-radius: 8px; 
             color: #c4b5fd; 
             font-size: 13px; 
             font-weight: 600; 
             text-align: center; 
-            background: rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.7);
             cursor: pointer;
+            text-shadow: 0 0 5px rgba(255,255,255,0.8);
         }
         
         .action-button:hover {
@@ -200,16 +198,17 @@
         /* Improved list item styling for resources/players */
         .list-item { 
             padding: 12px 16px; 
-            border: 1px solid rgba(91, 33, 182, 0.3); 
+            border: 1px solid rgba(91, 33, 182, 0.5); 
             border-radius: 8px; 
             color: #c4b5fd; 
             font-size: 13px; 
             font-weight: 500; 
-            background: rgba(0,0,0,0.15);
+            background: rgba(0,0,0,0.7);
             display: flex; 
             justify-content: space-between; 
             align-items: center;
             cursor: pointer;
+            text-shadow: 0 0 5px rgba(255,255,255,0.8);
         }
         
         .list-item:hover {
@@ -226,10 +225,10 @@
         
         .input-group { 
             margin-bottom: 15px; 
-            border: 1px solid rgba(91, 33, 182, 0.2); 
+            border: 1px solid rgba(91, 33, 182, 0.5); 
             border-radius: 8px; 
             padding: 12px; 
-            background: rgba(0,0,0,0.1);
+            background: rgba(0,0,0,0.7);
         }
         
         .input-group.selected { 
